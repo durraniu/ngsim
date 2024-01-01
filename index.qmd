@@ -1,0 +1,19 @@
+---
+title: "Importing, Transforming, Analyzing, and Visualizing NGSIM Data"
+listing:
+  contents: posts
+  sort: "date desc"
+  type: default
+  categories: true
+  sort-ui: false
+  filter-ui: false
+page-layout: full
+title-block-banner: true
+---
+
+This page contains several posts that show how to import, transform, analyze and visualize NGSIM vehicle trajectory data using programming tools (mostly R, but sometimes Python and Julia).  
+
+From the [Next Generation SIMulation (NGSIM) open data website](https://datahub.transportation.gov/stories/s/Next-Generation-Simulation-NGSIM-Open-Data/i5zb-xe34/):  
+
+> ITS DataHub has partnered with the Federal Highway Administration's (FHWA's) Next Generation SIMulation (NGSIM) program to make available detailed vehicle trajectory data and supporting data files along with the raw and processed video files from the NGSIM data collection efforts. Researchers for the NGSIM program collected the specified data on southbound `US 101` and Lankershim Boulevard in Los Angeles, CA, eastbound `I-80` in Emeryville, CA and `Peachtree` Street in Atlanta, GA.
+

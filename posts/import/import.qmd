@@ -1,0 +1,312 @@
+---
+title: "Import Data"
+date: today
+categories: [import, time-space]
+image: "trajectories.gif"
+---
+
+::: {.callout-tip}
+## After completing this post, you will be able to:
+
+* Programmatically download and save raw NGSIM data  
+* Partition the raw data by location and save as separate `parquet` files without loading them into memory  
+* Create this time-space diagram:  
+   ![](trajectories.gif){width=70%}
+
+:::
+
+## Download raw data
+
+We begin by downloading the NGSIM data from their website. Generally, you do this by clicking the download button on the data page. In R, you can download the data as follows. First, you create a `data` folder in your desired location:  
+
+```{r dowload1}
+#| eval: false
+dir.create("data")
+```
+
+Next, utilize the `download.file` function to download the NGSIM data:
+
+```{r dowload2}
+#| eval: false
+date_today <- format(Sys.Date(), "%Y%m%d")
+data_url <- paste0("https://datahub.transportation.gov/api/views/8ect-6jqj/rows.csv?date=", date_today, "&accessType=DOWNLOAD")
+
+# Download
+download.file(url = data_url, destfile = "data/ngsim_data.csv")
+```
+
+In the code chunk above, `Sys.Date()` provides today's date which we name as `date_today`. Then `data_url` is the URL built with `date_today` as that is how the ITS hub provides access to the data. This is the URL that we then provide to the `download.file` function along with the location and name of the csv file.   
+
+The time to download this 1.4 GB file depends on your internet speed. It took about 10 minutes on a 60 MB/s connection I tested.  
+
+![](ngsim_csv.PNG)  
+
+
+## Partition NGSIM data by location
+
+The NGSIM data has millions of rows and has a disk size of 1.4 GB! You *can* load all the data in R using the awesome `data.table` package:  
+
+```{r loadAll}
+#| eval: false
+library(data.table)
+ngsim_data <- fread("data/ngsim_data.csv")
+```
+
+[Note that R uses both the `<-` and `=` as assignment operators. But `<-` is used more frequently.]{.aside}
+
+Loading this data in R may be possible with good enough computer memory, but may not be a good idea due to the following reasons:  
+
+* Intensive calculations may slow down and even crash your R session when all the data is used simultaneously.  
+* You may be interested in analyzing only part of the data, e.g., only the Interstate-80 trajectories.  
+
+
+So, we use the `arrow` package to partition the data by location and use tools to minimize loading large parts of data in memory (all data imported in R is available in computer memory).  
+
+### Open `NGSIM`
+
+![](https://media.giphy.com/media/3o6Mbp8RPCrhrrFB6M/giphy.gif)
+
+`arrow` has this `open_dataset` function that lets you peek inside the data without actually loading it into memory.  
+
+```{r arrow1}
+library(arrow)
+ngsim_data <- open_dataset(
+  sources = "data/ngsim_data.csv", # <1>
+  col_types = schema(Location = string()), # <2>
+  format = "csv" # <3>
+)
+```
+1. Provide the location and name of the data file.  
+2. Optionally provide the column types. For example, read the `Location` column as a string type.  
+3. Specify the format of the input file.   
+
+This does not read the entire dataset, but rather creates an `ArrowObject` that provides metadata:  
+
+```{r arrow2}
+ngsim_data
+```
+
+Here you see several variables with their types. We can now use the `Location` variable to partition data.  
+
+### Partition by location and save
+
+Now we load the `dplyr` package to group the data by `Location` and then use `arrow` to save it.  
+
+```{r arrow3}
+#| eval: false
+data_by_location_folder <- "data/ngsim_location" # <1>
+
+ngsim_data |>
+  dplyr::group_by(Location) |> # <2>
+  write_dataset(path = data_by_location_folder, format = "parquet") # <3>
+```
+1. Path to the folder where you want to store files.  
+2. Group by the `Location` variable.  
+3. Save partitioned data in the specified location as a parquet file. Parquet files are column-based and are faster to read and write than csv files.  
+
+[The `|>` is a pipe operator in R. It means "and then". For example, take `ngsim_data` and then group it by `Location`.]{.aside}
+
+Each saved file is named as `part-0.parquet` in its own folder: 
+
+![](ngsim_location.PNG)
+   
+   
+   
+The beauty of the above code is that new files are created and saved without loading any data into memory. So, you don't need to wait to get to your desired data for analysis.   
+
+
+Let's see the size of each file:  
+
+```{r}
+#| echo: false
+data_by_location_folder <- "data/ngsim_location"
+```
+
+```{r arrow4}
+library(tibble)
+tibble(
+  files = list.files(data_by_location_folder, recursive = TRUE),
+  size_MB = file.size(file.path(data_by_location_folder, files)) / 1024^2
+)
+```
+
+These are small datasets that most computers can easily deal with.  
+
+
+## Create a time-space diagram with Interstate-80 data
+
+According to the [official web-page](https://www.fhwa.dot.gov/publications/research/operations/06137/), Interstate-80 (I80 from now on) data consists of vehicle trajectories collected between 4 pm - 5:30 pm on April 13, 2005.   
+
+To create a time-space diagram, we need variables for time (x-axis) and space (y-axis). `Local_Y` represents the longitudinal position of the front end of vehicles, so we can plot it on y-axis. However, there is only an interger encoded time variable in the data `Global_Time`. Therefore, the first step is to create a new column that contains the actual time.  
+
+### Open the I80 data and find the time range 
+
+We start by opening the I80 dataset:  
+
+```{r i801}
+i80 <- open_dataset(paste0(data_by_location_folder, "/Location=i-80"))
+
+i80
+```
+
+Using the `lubridate` package, we create a new column `actual_time`:  
+
+```{r i802}
+library(dplyr)
+library(lubridate)
+time_range <- i80 |>
+  select(Global_Time) |> # <1>
+  collect() |> # <2>
+  mutate(actual_time = as_datetime(Global_Time / 1000, # <3>
+    origin = "1970-01-01",
+    tz = "America/Los_Angeles"
+  )) |>
+  pull(actual_time) |> # <4>
+  range() # <5>
+```
+1. Select the `Global_Time` column without loading it.  
+2. Collect the selected data into memory.  
+3. Create the `actual_time` column by utilizing `lubridate::as_datetime`. Note that the appropriate timezone is provided.  
+4. Pull out the `actual_time` column as a vector. A vector in R is a collection of numbers.   
+5. Find the range (min. and max.) of the time.  
+
+Let's see the range:  
+
+```{r i803}
+time_range
+```
+
+This result indicates that the data was collected between 3:58 pm to 5:32 pm on April 13, 2005 which matches the description on the web-page.   
+
+### Partition the I80 data
+
+The description further says:  
+
+> A total of 45 minutes of data are available in the full dataset, segmented into three 15-minute periods: 4:00 p.m. to 4:15 p.m.; 5:00 p.m. to 5:15 p.m.; and 5:15 p.m. to 5:30 p.m.  
+
+However, the `time_range` indicates that data is available for 90 minutes rather than 45 minutes. Here, we follow the description and partition the I80 data by the specified periods:  
+
+```{r i804}
+#| eval: false
+# Specify the time periods:
+first_period_starts <- time_range[1]
+first_period_ends <- as_datetime("2005-04-13 16:15:00", tz = "America/Los_Angeles")
+second_period_starts <- as_datetime("2005-04-13 17:00:00", tz = "America/Los_Angeles")
+second_period_ends <- as_datetime("2005-04-13 17:15:00", tz = "America/Los_Angeles")
+third_period_ends <- time_range[2]
+
+# Since Global_Time is an integer, convert the start and end vars to integers:
+first_period_starts <- as.numeric(first_period_starts) * 1000
+first_period_ends <- as.numeric(first_period_ends) * 1000
+second_period_starts <- as.numeric(second_period_starts) * 1000
+second_period_ends <- as.numeric(second_period_ends) * 1000
+third_period_ends <- as.numeric(third_period_ends) * 1000
+
+# Create the period column
+i80 |>
+  mutate(period = case_when(
+    Global_Time >= first_period_starts & Global_Time <= first_period_ends ~ "first",
+    Global_Time >= second_period_starts & Global_Time <= second_period_ends ~ "second",
+    Global_Time > second_period_ends & Global_Time <= third_period_ends ~ "third"
+  )) |>
+  group_by(period) |>
+  write_dataset(path = "data/I80", format = "parquet")
+```
+The code above uses `dplyr::case_when` inside a `mutate` statement to create a new column that indicates the time period based on the specified start & end of each time period. Note that we did not use the `actual_time` column here because it does not exist in the saved parquet files. This column was created on the fly when the `time_range` variable was created.    
+
+
+This creates four, not three, files as expected:   
+
+![](i80_period.PNG)
+
+
+### Time-space diagram
+
+Let's create a time-space diagram of the first period in I80 dataset. We see that I80 has following lanes:  
+
+```{r i805}
+open_dataset("data/I80") |>
+  pull(Lane_ID, as_vector = TRUE) |>
+  unique()
+```
+
+For our diagram, we limit the data to the first three lanes only:  
+
+```{r i806}
+#| eval: false
+i80_filtered <- open_dataset("data/I80") |> # <1>
+  filter(
+    period %in% c("first"), # <2>
+    Lane_ID %in% c(1, 2, 3)
+  ) |>
+  collect() |>
+  mutate(actual_time = as_datetime(Global_Time / 1000,
+    origin = "1970-01-01",
+    tz = "America/Los_Angeles"
+  )) |>
+  arrange(Vehicle_ID, actual_time)
+```
+1. Open partitioned I80 dataset.  
+2. Filter the data to contain trajectories in lanes 1, 2, and 3 during the first period only.  
+
+
+Now, we use the `ggplot2` function to create the diagram:   
+
+```{r i807}
+#| eval: false
+library(ggplot2)
+time_space_diagram_i80 <- i80_filtered |>
+  ggplot() + # <1>
+  geom_path( # <2>
+    aes(
+      x = actual_time, # <3>
+      y = Local_Y,     # <4>
+      color = v_Vel,   # <5>
+      group = Vehicle_ID # <6>
+    ),
+    alpha = 0.5         # <7>
+  ) +
+  scale_color_gradient(low = "red", high = "green") + # <8>
+  facet_grid(Lane_ID ~ ., labeller = "label_both") +  # <9>
+  labs(                                               # <10>
+    x = "Time (HH:MM)",
+    y = "Longitudinal position",
+    color = "Speed (m/s)"
+  ) +
+  theme_minimal()                                    # <11>
+
+time_space_diagram_i80
+```
+1. Start by calling the `ggplot` function.  
+2. Use `geom_path` to create continuous lines.  
+3. Time on x-axis.  
+4. Longitudinal position (feet) on y-axis.  
+5. Colour by vehicle speed.  
+6. Create a separate line for each vehicle by specifying `group` as `Vehicle_ID`.  7. Make the lines 50% transparent.  
+8. Use red and green color scale.  
+9. Create small but connected plots (small multiples) for each lane.  
+10. Add labels to axes and colour legend.  
+11. Use the minimal theme to declutter the plot.  
+
+
+![](time_space_diagram.png)
+
+`ggplot2` has this handy function `ggsave` to save the plotted image to disk:  
+
+```{r i808}
+#| eval: false
+ggsave(time_space_diagram_i80,           # <1>
+       path = "time_space_diagram.png",  # <2>
+       width = 11,                       # <3>
+       height = 8,                       # <4>
+       units = "in",                     # <5>
+       dpi = 30)                        # <6>
+```
+1. Specify the plot that you want to save.  
+2. Provide the full path with file name where you want to save the plotted image.  
+3. Specify the width of plotted image.  
+4. Specify the height of plotted image.  
+5. Specify the units of width and height. `"in"` means inches.  
+6. Specify the resolution of the image. Higher resolution makes crisper images but takes longer to plot than lower resolution.  
+
+And we are done!  Believe it or not, saving this plot took longer than any other step in this post.

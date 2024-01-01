@@ -1,0 +1,8 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+posts/import/data
+posts/import/download_csv.gif
+posts/import/partitioning_by_location.R
+posts/import/importing_data_from_website_and_save_to_csv.R
