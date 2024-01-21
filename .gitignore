@@ -7,3 +7,4 @@ posts/import/download_csv.gif
 posts/import/partitioning_by_location.R
 posts/import/importing_data_from_website_and_save_to_csv.R
 /.quarto/
+posts/transform/data/i80_period1.parquet
