@@ -1,8 +1,9 @@
 ---
 title: "Import Data"
-date: today
+date: "2024-01-01"
 categories: [import, time-space]
 image: "trajectories.gif"
+code-annotations: hover
 ---
 
 ::: {.callout-tip}
@@ -12,8 +13,13 @@ image: "trajectories.gif"
 * Partition the raw data by location and save as separate `parquet` files without loading them into memory  
 * Create this time-space diagram:  
    ![](trajectories.gif){width=70%}
+    
+Note: The code in this post is derived from [Chapter 22 of R for Data Science book](https://r4ds.hadley.nz/arrow).  
 
 :::
+
+[All code in this post is written in `R` programming language.]{.aside}
+
 
 ## Download raw data
 
@@ -67,6 +73,8 @@ So, we use the `arrow` package to partition the data by location and use tools t
 ![](https://media.giphy.com/media/3o6Mbp8RPCrhrrFB6M/giphy.gif)
 
 `arrow` has this `open_dataset` function that lets you peek inside the data without actually loading it into memory.  
+
+[Hover over the annotated line numbers to see the code description.]{.aside}
 
 ```{r arrow1}
 library(arrow)
@@ -244,13 +252,14 @@ i80_filtered <- open_dataset("data/I80") |> # <1>
     origin = "1970-01-01",
     tz = "America/Los_Angeles"
   )) |>
-  arrange(Vehicle_ID, actual_time)
+  arrange(Vehicle_ID, actual_time)  # <3>
 ```
 1. Open partitioned I80 dataset.  
 2. Filter the data to contain trajectories in lanes 1, 2, and 3 during the first period only.  
+3. Sort by `Vehicle_ID` and `actual_time`.    
 
 
-Now, we use the `ggplot2` function to create the diagram:   
+Now, we use the `ggplot2` package to create the diagram:   
 
 ```{r i807}
 #| eval: false

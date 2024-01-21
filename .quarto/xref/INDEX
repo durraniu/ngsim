@@ -13,5 +13,8 @@
   },
   "posts/import/import.qmd": {
     "import.html": "644a814c"
+  },
+  "posts/transform/transform.qmd": {
+    "transform.html": "9ab16aa9"
   }
 }

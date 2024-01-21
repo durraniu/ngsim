@@ -11,6 +11,8 @@ format:
   html:
     theme: united
     css: styles.css
+    
+freeze: true
 
 
 
