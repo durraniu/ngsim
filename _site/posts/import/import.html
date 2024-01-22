@@ -9,7 +9,7 @@
 <meta name="author" content="Umair Durrani">
 <meta name="dcterms.date" content="2024-01-01">
 
-<title>Home - Import Data</title>
+<title>Home - Import Data with R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -96,6 +96,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+<link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -132,7 +135,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Import Data</h1>
+      <h1 class="title">Import Data with R</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">import</div>
                 <div class="quarto-category">time-space</div>
@@ -264,17 +267,17 @@ After completing this post, you will be able to:
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-lines="3" data-code-cell="annotated-cell-4" data-code-annotation="1">Provide the location and name of the data file.<br>
+<span data-code-lines="3" data-code-annotation="1" data-code-cell="annotated-cell-4">Provide the location and name of the data file.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-4" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-lines="4" data-code-cell="annotated-cell-4" data-code-annotation="2">Optionally provide the column types. For example, read the <code>Location</code> column as a string type.<br>
+<span data-code-lines="4" data-code-annotation="2" data-code-cell="annotated-cell-4">Optionally provide the column types. For example, read the <code>Location</code> column as a string type.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-4" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-lines="5" data-code-cell="annotated-cell-4" data-code-annotation="3">Specify the format of the input file.</span>
+<span data-code-lines="5" data-code-annotation="3" data-code-cell="annotated-cell-4">Specify the format of the input file.</span>
 </dd>
 </dl>
 </div>
@@ -326,17 +329,17 @@ Location: string</code></pre>
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-lines="1" data-code-cell="annotated-cell-6" data-code-annotation="1">Path to the folder where you want to store files.<br>
+<span data-code-lines="1" data-code-annotation="1" data-code-cell="annotated-cell-6">Path to the folder where you want to store files.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-6" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-lines="4" data-code-cell="annotated-cell-6" data-code-annotation="2">Group by the <code>Location</code> variable.<br>
+<span data-code-lines="4" data-code-annotation="2" data-code-cell="annotated-cell-6">Group by the <code>Location</code> variable.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-6" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-lines="5" data-code-cell="annotated-cell-6" data-code-annotation="3">Save partitioned data in the specified location as a parquet file. Parquet files are column-based and are faster to read and write than csv files.</span>
+<span data-code-lines="5" data-code-annotation="3" data-code-cell="annotated-cell-6">Save partitioned data in the specified location as a parquet file. Parquet files are column-based and are faster to read and write than csv files.</span>
 </dd>
 </dl>
 </div>
@@ -352,14 +355,13 @@ Location: string</code></pre>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">files =</span> <span class="fu">list.files</span>(data_by_location_folder, <span class="at">recursive =</span> <span class="cn">TRUE</span>),</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">size_MB =</span> <span class="fu">file.size</span>(<span class="fu">file.path</span>(data_by_location_folder, files)) <span class="sc">/</span> <span class="dv">1024</span><span class="sc">^</span><span class="dv">2</span></span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 × 2
-  files                              size_MB
-  &lt;chr&gt;                                &lt;dbl&gt;
-1 Location=i-80/part-0.parquet         290. 
-2 Location=lankershim/part-0.parquet   118. 
-3 Location=peachtree/part-0.parquet     67.3
-4 Location=us-101/part-0.parquet       289. </code></pre>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["files"],"name":[1],"type":["chr"],"align":["left"]},{"label":["size_MB"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"Location=i-80/part-0.parquet","2":"290.2935"},{"1":"Location=lankershim/part-0.parquet","2":"118.0301"},{"1":"Location=peachtree/part-0.parquet","2":"67.3268"},{"1":"Location=us-101/part-0.parquet","2":"289.1620"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 </div>
 </div>
 <p>These are small datasets that most computers can easily deal with.</p>
@@ -373,9 +375,9 @@ Location: string</code></pre>
 <h3 class="anchored" data-anchor-id="open-the-i80-data-and-find-the-time-range">Open the I80 data and find the time range</h3>
 <p>We start by opening the I80 dataset:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>i80 <span class="ot">&lt;-</span> <span class="fu">open_dataset</span>(<span class="fu">paste0</span>(data_by_location_folder, <span class="st">"/Location=i-80"</span>))</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>i80</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>i80 <span class="ot">&lt;-</span> <span class="fu">open_dataset</span>(<span class="fu">paste0</span>(data_by_location_folder, <span class="st">"/Location=i-80"</span>))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>i80</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>FileSystemDataset with 1 Parquet file
 Vehicle_ID: int64
@@ -421,34 +423,34 @@ Time_Headway: double</code></pre>
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-9" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-lines="4" data-code-cell="annotated-cell-9" data-code-annotation="1">Select the <code>Global_Time</code> column without loading it.<br>
+<span data-code-lines="4" data-code-annotation="1" data-code-cell="annotated-cell-9">Select the <code>Global_Time</code> column without loading it.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-9" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-lines="5" data-code-cell="annotated-cell-9" data-code-annotation="2">Collect the selected data into memory.<br>
+<span data-code-lines="5" data-code-annotation="2" data-code-cell="annotated-cell-9">Collect the selected data into memory.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-9" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-lines="6" data-code-cell="annotated-cell-9" data-code-annotation="3">Create the <code>actual_time</code> column by utilizing <code>lubridate::as_datetime</code>. Note that the appropriate timezone is provided.<br>
+<span data-code-lines="6" data-code-annotation="3" data-code-cell="annotated-cell-9">Create the <code>actual_time</code> column by utilizing <code>lubridate::as_datetime</code>. Note that the appropriate timezone is provided.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-9" data-target-annotation="4">4</dt>
 <dd>
-<span data-code-lines="10" data-code-cell="annotated-cell-9" data-code-annotation="4">Pull out the <code>actual_time</code> column as a vector. A vector in R is a collection of numbers.<br>
+<span data-code-lines="10" data-code-annotation="4" data-code-cell="annotated-cell-9">Pull out the <code>actual_time</code> column as a vector. A vector in R is a collection of numbers.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-9" data-target-annotation="5">5</dt>
 <dd>
-<span data-code-lines="11" data-code-cell="annotated-cell-9" data-code-annotation="5">Find the range (min. and max.) of the time.</span>
+<span data-code-lines="11" data-code-annotation="5" data-code-cell="annotated-cell-9">Find the range (min. and max.) of the time.</span>
 </dd>
 </dl>
 </div>
 </div>
 <p>Let’s see the range:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>time_range</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>time_range</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "2005-04-13 15:58:55 PDT" "2005-04-13 17:32:14 PDT"</code></pre>
 </div>
@@ -463,29 +465,29 @@ Time_Headway: double</code></pre>
 </blockquote>
 <p>However, the <code>time_range</code> indicates that data is available for 90 minutes rather than 45 minutes. Here, we follow the description and partition the I80 data by the specified periods:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify the time periods:</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>first_period_starts <span class="ot">&lt;-</span> time_range[<span class="dv">1</span>]</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>first_period_ends <span class="ot">&lt;-</span> <span class="fu">as_datetime</span>(<span class="st">"2005-04-13 16:15:00"</span>, <span class="at">tz =</span> <span class="st">"America/Los_Angeles"</span>)</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>second_period_starts <span class="ot">&lt;-</span> <span class="fu">as_datetime</span>(<span class="st">"2005-04-13 17:00:00"</span>, <span class="at">tz =</span> <span class="st">"America/Los_Angeles"</span>)</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>second_period_ends <span class="ot">&lt;-</span> <span class="fu">as_datetime</span>(<span class="st">"2005-04-13 17:15:00"</span>, <span class="at">tz =</span> <span class="st">"America/Los_Angeles"</span>)</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>third_period_ends <span class="ot">&lt;-</span> time_range[<span class="dv">2</span>]</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Since Global_Time is an integer, convert the start and end vars to integers:</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>first_period_starts <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(first_period_starts) <span class="sc">*</span> <span class="dv">1000</span></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>first_period_ends <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(first_period_ends) <span class="sc">*</span> <span class="dv">1000</span></span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>second_period_starts <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(second_period_starts) <span class="sc">*</span> <span class="dv">1000</span></span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>second_period_ends <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(second_period_ends) <span class="sc">*</span> <span class="dv">1000</span></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>third_period_ends <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(third_period_ends) <span class="sc">*</span> <span class="dv">1000</span></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the period column</span></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>i80 <span class="sc">|&gt;</span></span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">period =</span> <span class="fu">case_when</span>(</span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    Global_Time <span class="sc">&gt;=</span> first_period_starts <span class="sc">&amp;</span> Global_Time <span class="sc">&lt;=</span> first_period_ends <span class="sc">~</span> <span class="st">"first"</span>,</span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    Global_Time <span class="sc">&gt;=</span> second_period_starts <span class="sc">&amp;</span> Global_Time <span class="sc">&lt;=</span> second_period_ends <span class="sc">~</span> <span class="st">"second"</span>,</span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    Global_Time <span class="sc">&gt;</span> second_period_ends <span class="sc">&amp;</span> Global_Time <span class="sc">&lt;=</span> third_period_ends <span class="sc">~</span> <span class="st">"third"</span></span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">|&gt;</span></span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(period) <span class="sc">|&gt;</span></span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_dataset</span>(<span class="at">path =</span> <span class="st">"data/I80"</span>, <span class="at">format =</span> <span class="st">"parquet"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify the time periods:</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>first_period_starts <span class="ot">&lt;-</span> time_range[<span class="dv">1</span>]</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>first_period_ends <span class="ot">&lt;-</span> <span class="fu">as_datetime</span>(<span class="st">"2005-04-13 16:15:00"</span>, <span class="at">tz =</span> <span class="st">"America/Los_Angeles"</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>second_period_starts <span class="ot">&lt;-</span> <span class="fu">as_datetime</span>(<span class="st">"2005-04-13 17:00:00"</span>, <span class="at">tz =</span> <span class="st">"America/Los_Angeles"</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>second_period_ends <span class="ot">&lt;-</span> <span class="fu">as_datetime</span>(<span class="st">"2005-04-13 17:15:00"</span>, <span class="at">tz =</span> <span class="st">"America/Los_Angeles"</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>third_period_ends <span class="ot">&lt;-</span> time_range[<span class="dv">2</span>]</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Since Global_Time is an integer, convert the start and end vars to integers:</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>first_period_starts <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(first_period_starts) <span class="sc">*</span> <span class="dv">1000</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>first_period_ends <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(first_period_ends) <span class="sc">*</span> <span class="dv">1000</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>second_period_starts <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(second_period_starts) <span class="sc">*</span> <span class="dv">1000</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>second_period_ends <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(second_period_ends) <span class="sc">*</span> <span class="dv">1000</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>third_period_ends <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(third_period_ends) <span class="sc">*</span> <span class="dv">1000</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the period column</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>i80 <span class="sc">|&gt;</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">period =</span> <span class="fu">case_when</span>(</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>    Global_Time <span class="sc">&gt;=</span> first_period_starts <span class="sc">&amp;</span> Global_Time <span class="sc">&lt;=</span> first_period_ends <span class="sc">~</span> <span class="st">"first"</span>,</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    Global_Time <span class="sc">&gt;=</span> second_period_starts <span class="sc">&amp;</span> Global_Time <span class="sc">&lt;=</span> second_period_ends <span class="sc">~</span> <span class="st">"second"</span>,</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>    Global_Time <span class="sc">&gt;</span> second_period_ends <span class="sc">&amp;</span> Global_Time <span class="sc">&lt;=</span> third_period_ends <span class="sc">~</span> <span class="st">"third"</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">|&gt;</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(period) <span class="sc">|&gt;</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_dataset</span>(<span class="at">path =</span> <span class="st">"data/I80"</span>, <span class="at">format =</span> <span class="st">"parquet"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The code above uses <code>dplyr::case_when</code> inside a <code>mutate</code> statement to create a new column that indicates the time period based on the specified start &amp; end of each time period. Note that we did not use the <code>actual_time</code> column here because it does not exist in the saved parquet files. This column was created on the fly when the <code>time_range</code> variable was created.</p>
 <p>This creates four, not three, files as expected:</p>
@@ -495,9 +497,9 @@ Time_Headway: double</code></pre>
 <h3 class="anchored" data-anchor-id="time-space-diagram">Time-space diagram</h3>
 <p>Let’s create a time-space diagram of the first period in I80 dataset. We see that I80 has following lanes:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_dataset</span>(<span class="st">"data/I80"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(Lane_ID, <span class="at">as_vector =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_dataset</span>(<span class="st">"data/I80"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(Lane_ID, <span class="at">as_vector =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 5 6 2 3 4 1 7</code></pre>
 </div>
@@ -519,17 +521,17 @@ Time_Headway: double</code></pre>
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-13" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-lines="1" data-code-cell="annotated-cell-13" data-code-annotation="1">Open partitioned I80 dataset.<br>
+<span data-code-lines="1" data-code-annotation="1" data-code-cell="annotated-cell-13">Open partitioned I80 dataset.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-13" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-lines="3" data-code-cell="annotated-cell-13" data-code-annotation="2">Filter the data to contain trajectories in lanes 1, 2, and 3 during the first period only.<br>
+<span data-code-lines="3" data-code-annotation="2" data-code-cell="annotated-cell-13">Filter the data to contain trajectories in lanes 1, 2, and 3 during the first period only.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-13" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-lines="11" data-code-cell="annotated-cell-13" data-code-annotation="3">Sort by <code>Vehicle_ID</code> and <code>actual_time</code>.</span>
+<span data-code-lines="11" data-code-annotation="3" data-code-cell="annotated-cell-13">Sort by <code>Vehicle_ID</code> and <code>actual_time</code>.</span>
 </dd>
 </dl>
 </div>
@@ -562,52 +564,52 @@ Time_Headway: double</code></pre>
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-14" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-lines="3" data-code-cell="annotated-cell-14" data-code-annotation="1">Start by calling the <code>ggplot</code> function.<br>
+<span data-code-lines="3" data-code-annotation="1" data-code-cell="annotated-cell-14">Start by calling the <code>ggplot</code> function.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-14" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-lines="4" data-code-cell="annotated-cell-14" data-code-annotation="2">Use <code>geom_path</code> to create continuous lines.<br>
+<span data-code-lines="4" data-code-annotation="2" data-code-cell="annotated-cell-14">Use <code>geom_path</code> to create continuous lines.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-14" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-lines="6" data-code-cell="annotated-cell-14" data-code-annotation="3">Time on x-axis.<br>
+<span data-code-lines="6" data-code-annotation="3" data-code-cell="annotated-cell-14">Time on x-axis.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-14" data-target-annotation="4">4</dt>
 <dd>
-<span data-code-lines="7" data-code-cell="annotated-cell-14" data-code-annotation="4">Longitudinal position (feet) on y-axis.<br>
+<span data-code-lines="7" data-code-annotation="4" data-code-cell="annotated-cell-14">Longitudinal position (feet) on y-axis.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-14" data-target-annotation="5">5</dt>
 <dd>
-<span data-code-lines="8" data-code-cell="annotated-cell-14" data-code-annotation="5">Colour by vehicle speed.<br>
+<span data-code-lines="8" data-code-annotation="5" data-code-cell="annotated-cell-14">Colour by vehicle speed.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-14" data-target-annotation="6">6</dt>
 <dd>
-<span data-code-lines="9" data-code-cell="annotated-cell-14" data-code-annotation="6">Create a separate line for each vehicle by specifying <code>group</code> as <code>Vehicle_ID</code>. 7. Make the lines 50% transparent.<br>
+<span data-code-lines="9" data-code-annotation="6" data-code-cell="annotated-cell-14">Create a separate line for each vehicle by specifying <code>group</code> as <code>Vehicle_ID</code>. 7. Make the lines 50% transparent.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-14" data-target-annotation="7">7</dt>
 <dd>
-<span data-code-lines="11" data-code-cell="annotated-cell-14" data-code-annotation="7">Use red and green color scale.<br>
+<span data-code-lines="11" data-code-annotation="7" data-code-cell="annotated-cell-14">Use red and green color scale.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-14" data-target-annotation="8">8</dt>
 <dd>
-<span data-code-lines="13" data-code-cell="annotated-cell-14" data-code-annotation="8">Create small but connected plots (small multiples) for each lane.<br>
+<span data-code-lines="13" data-code-annotation="8" data-code-cell="annotated-cell-14">Create small but connected plots (small multiples) for each lane.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-14" data-target-annotation="9">9</dt>
 <dd>
-<span data-code-lines="14" data-code-cell="annotated-cell-14" data-code-annotation="9">Add labels to axes and colour legend.<br>
+<span data-code-lines="14" data-code-annotation="9" data-code-cell="annotated-cell-14">Add labels to axes and colour legend.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-14" data-target-annotation="10">10</dt>
 <dd>
-<span data-code-lines="15" data-code-cell="annotated-cell-14" data-code-annotation="10">Use the minimal theme to declutter the plot.</span>
+<span data-code-lines="15" data-code-annotation="10" data-code-cell="annotated-cell-14">Use the minimal theme to declutter the plot.</span>
 </dd>
 </dl>
 </div>
@@ -625,32 +627,32 @@ Time_Headway: double</code></pre>
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-15" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-lines="1" data-code-cell="annotated-cell-15" data-code-annotation="1">Specify the plot that you want to save.<br>
+<span data-code-lines="1" data-code-annotation="1" data-code-cell="annotated-cell-15">Specify the plot that you want to save.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-15" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-lines="2" data-code-cell="annotated-cell-15" data-code-annotation="2">Provide the full path with file name where you want to save the plotted image.<br>
+<span data-code-lines="2" data-code-annotation="2" data-code-cell="annotated-cell-15">Provide the full path with file name where you want to save the plotted image.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-15" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-lines="3" data-code-cell="annotated-cell-15" data-code-annotation="3">Specify the width of plotted image.<br>
+<span data-code-lines="3" data-code-annotation="3" data-code-cell="annotated-cell-15">Specify the width of plotted image.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-15" data-target-annotation="4">4</dt>
 <dd>
-<span data-code-lines="4" data-code-cell="annotated-cell-15" data-code-annotation="4">Specify the height of plotted image.<br>
+<span data-code-lines="4" data-code-annotation="4" data-code-cell="annotated-cell-15">Specify the height of plotted image.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-15" data-target-annotation="5">5</dt>
 <dd>
-<span data-code-lines="5" data-code-cell="annotated-cell-15" data-code-annotation="5">Specify the units of width and height. <code>"in"</code> means inches.<br>
+<span data-code-lines="5" data-code-annotation="5" data-code-cell="annotated-cell-15">Specify the units of width and height. <code>"in"</code> means inches.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-15" data-target-annotation="6">6</dt>
 <dd>
-<span data-code-lines="6" data-code-cell="annotated-cell-15" data-code-annotation="6">Specify the resolution of the image. Higher resolution makes crisper images but takes longer to plot than lower resolution.</span>
+<span data-code-lines="6" data-code-annotation="6" data-code-cell="annotated-cell-15">Specify the resolution of the image. Higher resolution makes crisper images but takes longer to plot than lower resolution.</span>
 </dd>
 </dl>
 </div>
@@ -663,12 +665,13 @@ Time_Headway: double</code></pre>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{durrani2024,
   author = {Durrani, Umair},
-  title = {Import {Data}},
+  title = {Import {Data} with {R}},
   date = {2024-01-01},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-durrani2024" class="csl-entry quarto-appendix-citeas" role="listitem">
-Durrani, Umair. 2024. <span>“Import Data.”</span> January 1, 2024.
+Durrani, Umair. 2024. <span>“Import Data with R.”</span> January 1,
+2024.
 </div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {

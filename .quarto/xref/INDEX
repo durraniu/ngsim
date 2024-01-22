@@ -16,5 +16,11 @@
   },
   "posts/transform/transform.qmd": {
     "transform.html": "9ab16aa9"
+  },
+  "posts/transform/transform_py.qmd": {
+    "transform_py.html": "ba66362b"
+  },
+  "posts/transform/transform_r.qmd": {
+    "transform_r.html": "532c9e0c"
   }
 }

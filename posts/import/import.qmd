@@ -1,5 +1,5 @@
 ---
-title: "Import Data"
+title: "Import Data with R"
 date: "2024-01-01"
 categories: [import, time-space]
 image: "trajectories.gif"

@@ -31,16 +31,22 @@ data_py['actual_time'] = pd.to_datetime(data_py['global_time'] / 1000,
                                     unit='s', origin='1970-01-01', utc=True)
 data_py['actual_time'] = data_py['actual_time'].dt.tz_convert('America/Los_Angeles')
 
-data_py = pl.from_pandas(data_py)
+## First: Sort by Vehicle ID and Time
+data_py = data_py.sort_values(by = ["vehicle_id", "frame_id"])
+
+def calculate_time_elapsed(group_df):
+    num_rows = len(group_df)
+    group_df['time'] = [i / 10.0 for i in range(num_rows)]
+    return group_df
+
+# Add the time elapsed column to the DataFrame within each group
+data_py = data_py.groupby('vehicle_id', group_keys=False).apply(calculate_time_elapsed)
+
+
 
 
 # How to create variables for the preceding vehicle?
-
-## First: Sort by Vehicle ID and Time
-data_py = data_py.sort(["vehicle_id", "frame_id"])
-
 ## Then create new cols
-data_py = data_py.to_pandas()
 data_py = data_py.merge(
   data_py.loc[:, ['frame_id', 'vehicle_id', 'local_x', 'local_y', 'v_length',
             'v_width', 'v_class', 'v_vel', 'v_acc']] , 
@@ -50,21 +56,9 @@ data_py = data_py.merge(
               )
 data_py = data_py.drop(['vehicle_id_preceding'], axis = 'columns')
 
-def calculate_time_elapsed(group_df):
-    num_rows = len(group_df)
-    group_df['time_elapsed'] = [i / 10.0 for i in range(num_rows)]
-    return group_df
-
-# Add the time elapsed column to the DataFrame within each group
-data_py = data_py.groupby('vehicle_id', group_keys=False).apply(calculate_time_elapsed)
 
 
 data_py = pl.from_pandas(data_py)
-
-
-
-
-
 
 data_py.columns
 
@@ -76,6 +70,8 @@ data_py = data_py.rename({
     "v_vel_preceding":"preceding_v_vel", 
     "v_acc_preceding":"preceding_v_acc"
     })
+
+data_py.columns
 
 
 
@@ -110,10 +106,11 @@ from lets_plot import *
 LetsPlot.setup_html()
 
 data_py_veh = data_py.filter(pl.col('vehicle_id') == "2")
-
-ggplot(data = data_py_veh,
-       mapping = aes(x = 'time', y = 'v_vel')) +\
-  geom_path() +\
+(
+ggplot(data = data_py_veh) +\
+  geom_path(mapping = aes(x = 'time', y = 'v_vel', color = "Subject vehicle")) +\
+  geom_path(mapping = aes(x = 'time', y =' preceding_vel', color = "Preceding vehicle")) +\
   labs(x = "Time (s)", y = "Velocity (m/s)",
-       title = "Velocity of vehicle # 2000") +\
+       title = "Velocity of vehicle # 2 and its preceding vehicle") +\
   theme_minimal()
+)

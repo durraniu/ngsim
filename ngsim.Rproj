@@ -11,3 +11,7 @@ Encoding: UTF-8
 
 RnwWeave: Sweave
 LaTeX: pdfLaTeX
+
+PythonType: system
+PythonVersion: 3.12.1
+PythonPath: C:/Users/umair/AppData/Local/Programs/Python/Python312/python.exe
