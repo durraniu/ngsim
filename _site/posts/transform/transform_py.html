@@ -1203,32 +1203,32 @@ After completing this post, you will be able to:
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-lines="4" data-code-annotation="1" data-code-cell="annotated-cell-6"><code>merge</code> is used for joining <code>pandas</code> dataframes.<br>
+<span data-code-lines="4" data-code-cell="annotated-cell-6" data-code-annotation="1"><code>merge</code> is used for joining <code>pandas</code> dataframes.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-6" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-lines="6" data-code-annotation="2" data-code-cell="annotated-cell-6">This is part of the <code>data_py</code> dataframe. It includes those variables of the subject vehicle that we want to create for the preceding vehicle.<br>
+<span data-code-lines="6" data-code-cell="annotated-cell-6" data-code-annotation="2">This is part of the <code>data_py</code> dataframe. It includes those variables of the subject vehicle that we want to create for the preceding vehicle.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-6" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-lines="7,8" data-code-annotation="3" data-code-cell="annotated-cell-6"><code>data_py</code> is the “left” dataframe and <code>data_py.loc[:, ['frame_id', 'vehicle_id', 'local_x', 'local_y', 'v_length', 'v_width', 'v_class', 'v_vel', 'v_acc']]</code> is the “right” dataframe. At a given <code>frame_id</code>, ‘local_x’, ‘local_y’, ‘v_length’, ‘v_width’, ‘v_class’, ‘v_vel’, ‘v_acc’ are joined with <code>data_py</code> using the <code>preceding</code> and <code>vehicle_id</code> columns.<br>
+<span data-code-lines="7,8" data-code-cell="annotated-cell-6" data-code-annotation="3"><code>data_py</code> is the “left” dataframe and <code>data_py.loc[:, ['frame_id', 'vehicle_id', 'local_x', 'local_y', 'v_length', 'v_width', 'v_class', 'v_vel', 'v_acc']]</code> is the “right” dataframe. At a given <code>frame_id</code>, ‘local_x’, ‘local_y’, ‘v_length’, ‘v_width’, ‘v_class’, ‘v_vel’, ‘v_acc’ are joined with <code>data_py</code> using the <code>preceding</code> and <code>vehicle_id</code> columns.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-6" data-target-annotation="4">4</dt>
 <dd>
-<span data-code-lines="9" data-code-annotation="4" data-code-cell="annotated-cell-6">The type of join is “left”.<br>
+<span data-code-lines="9" data-code-cell="annotated-cell-6" data-code-annotation="4">The type of join is “left”.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-6" data-target-annotation="5">5</dt>
 <dd>
-<span data-code-lines="10" data-code-annotation="5" data-code-cell="annotated-cell-6">A suffix <code>_preceding</code> is added to show that these variables are for the preceding vehicle.<br>
+<span data-code-lines="10" data-code-cell="annotated-cell-6" data-code-annotation="5">A suffix <code>_preceding</code> is added to show that these variables are for the preceding vehicle.<br>
 </span>
 </dd>
 <dt data-target-cell="annotated-cell-6" data-target-annotation="6">6</dt>
 <dd>
-<span data-code-lines="12" data-code-annotation="6" data-code-cell="annotated-cell-6">This operation created a redundant preceding vehicle ID that we drop here.</span>
+<span data-code-lines="12" data-code-cell="annotated-cell-6" data-code-annotation="6">This operation created a redundant preceding vehicle ID that we drop here.</span>
 </dd>
 </dl>
 </div>
@@ -1410,11 +1410,11 @@ After completing this post, you will be able to:
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-lines="1" data-code-annotation="1" data-code-cell="annotated-cell-7">Convert the <code>pandas</code> dataframe to <code>polars</code> dataframe.</span>
+<span data-code-lines="1" data-code-cell="annotated-cell-7" data-code-annotation="1">Convert the <code>pandas</code> dataframe to <code>polars</code> dataframe.</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-lines="3" data-code-annotation="2" data-code-cell="annotated-cell-7">Use the <code>polars.rename</code> function to rename the columns.</span>
+<span data-code-lines="3" data-code-cell="annotated-cell-7" data-code-annotation="2">Use the <code>polars.rename</code> function to rename the columns.</span>
 </dd>
 </dl>
 </div>
@@ -1883,7 +1883,7 @@ After completing this post, you will be able to:
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-10" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-lines="4" data-code-annotation="1" data-code-cell="annotated-cell-10">Columns are first converted to string data type and then the strings are converted to categorical data type.</span>
+<span data-code-lines="4" data-code-cell="annotated-cell-10" data-code-annotation="1">Columns are first converted to string data type and then the strings are converted to categorical data type.</span>
 </dd>
 </dl>
 </div>
