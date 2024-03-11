@@ -1,0 +1,2088 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Umair Durrani">
+<meta name="dcterms.date" content="2024-03-10">
+
+<title>Home - Transform Data with Julia</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="floating nav-fixed slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Home</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://umairdurrani.com/" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Transform Data with Julia</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">import</div>
+                <div class="quarto-category">transform</div>
+                <div class="quarto-category">Tidier.jl</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p><a href="https://umairdurrani.com/">Umair Durrani</a> </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">March 10, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#load-parquet-file" id="toc-load-parquet-file" class="nav-link active" data-scroll-target="#load-parquet-file">Load parquet file</a></li>
+  <li><a href="#clean-dataframe-names" id="toc-clean-dataframe-names" class="nav-link" data-scroll-target="#clean-dataframe-names">Clean dataframe names</a></li>
+  <li><a href="#how-to-create-a-time-column" id="toc-how-to-create-a-time-column" class="nav-link" data-scroll-target="#how-to-create-a-time-column">How to create a time column?</a></li>
+  <li><a href="#how-to-create-variables-for-the-preceding-vehicle" id="toc-how-to-create-variables-for-the-preceding-vehicle" class="nav-link" data-scroll-target="#how-to-create-variables-for-the-preceding-vehicle">How to create variables for the preceding vehicle?</a></li>
+  <li><a href="#how-to-remove-undesired-columns" id="toc-how-to-remove-undesired-columns" class="nav-link" data-scroll-target="#how-to-remove-undesired-columns">How to remove undesired columns?</a></li>
+  <li><a href="#how-to-transform-multiple-columns" id="toc-how-to-transform-multiple-columns" class="nav-link" data-scroll-target="#how-to-transform-multiple-columns">How to transform multiple columns?</a>
+  <ul class="collapse">
+  <li><a href="#metric-units" id="toc-metric-units" class="nav-link" data-scroll-target="#metric-units">Metric units</a></li>
+  <li><a href="#convert-numbers-to-string-data-type" id="toc-convert-numbers-to-string-data-type" class="nav-link" data-scroll-target="#convert-numbers-to-string-data-type">Convert numbers to string data type</a></li>
+  </ul></li>
+  <li><a href="#visualization-with-one-vehicle" id="toc-visualization-with-one-vehicle" class="nav-link" data-scroll-target="#visualization-with-one-vehicle">Visualization with one vehicle</a></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content">
+
+
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This is the second post in the NGSIM data analysis series. Previous post:</p>
+<ul>
+<li><a href="https://itav-ngsim.netlify.app/posts/import/import">Import data</a></li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+After completing this post, you will be able to:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Read parquet files<br>
+</li>
+<li>Do a quick clean-up of column names<br>
+</li>
+<li>Convert integer time to datetime fromat<br>
+</li>
+<li>Sort data by columns<br>
+</li>
+<li>Create new columns<br>
+</li>
+<li>Remove undesired columns<br>
+</li>
+<li>Filter data</li>
+</ul>
+</div>
+</div>
+<div class="page-columns page-full"><p></p><div class="no-row-height column-margin column-container"><span class="">This post shows code in <code>Julia</code>. You can see the same post written in <code>Python</code> <a href="../../posts/transform/transform_py.html">here</a> and in <code>R</code> <a href="../../posts/transform/transform_r.html">here</a>.</span></div></div>
+<p>In the previous post, we partitioned the Interstate 80 (I80) vehicle trajectories data by time and then saved it on disk:</p>
+<p><img src="i80_period.PNG" class="img-fluid"></p>
+<p>We now make use of the parquet file in the <code>period=first</code> directory for learning to transform data. Since this file is part of partitioned data, I saved it as a separate parquet file (<code>i80_period1.parquet</code>) in a different location.</p>
+<section id="load-parquet-file" class="level2">
+<h2 class="anchored" data-anchor-id="load-parquet-file">Load parquet file</h2>
+<p>Reading the parquet file requires the <code>Parquet2</code> package:</p>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ] add Parquet2</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DataFrames</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Parquet2</span>: Dataset</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>path_to_first_period_file <span class="op">=</span> <span class="st">"data/i80_period1.parquet"</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>data_jl <span class="op">=</span> <span class="fu">DataFrame</span>(<span class="fu">Dataset</span>(path_to_first_period_file));</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(data_jl, <span class="fl">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div><div style="float: left;"><span>5×24 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
+<table class="data-frame table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header header">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">Row</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Vehicle_ID</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Frame_ID</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Total_Frames</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Global_Time</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Local_X</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Local_Y</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Global_X</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Global_Y</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_length</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_Width</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_Class</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_Vel</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_Acc</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Lane_ID</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">O_Zone</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">D_Zone</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Int_ID</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Section_ID</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Direction</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Movement</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Preceding</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Following</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Space_Headway</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Time_Headway</th>
+</tr>
+<tr class="odd subheader headerLastRow">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Int32}">Int32?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Int32}">Int32?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Int32}">Int32?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Int64}">Int64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Int32}">Int32?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Int32}">Int32?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Int32}">Int32?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Int32}">Int32?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Int32}">Int32?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Int32}">Int32?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Int32}">Int32?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Int32}">Int32?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Int32}">Int32?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Int32}">Int32?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">1</td>
+<td style="text-align: right;">3027</td>
+<td style="text-align: right;">8493</td>
+<td style="text-align: right;">813</td>
+<td style="text-align: right;">1113433984200</td>
+<td style="text-align: right;">53.115</td>
+<td style="text-align: right;">363.266</td>
+<td style="text-align: right;">6.04284e6</td>
+<td style="text-align: right;">2.13343e6</td>
+<td style="text-align: right;">15.3</td>
+<td style="text-align: right;">7.4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">21.46</td>
+<td style="text-align: right;">-8.14</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right;">3014</td>
+<td style="text-align: right;">3032</td>
+<td style="text-align: right;">64.23</td>
+<td style="text-align: right;">2.99</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">2</td>
+<td style="text-align: right;">3214</td>
+<td style="text-align: right;">9115</td>
+<td style="text-align: right;">708</td>
+<td style="text-align: right;">1113434046400</td>
+<td style="text-align: right;">67.931</td>
+<td style="text-align: right;">655.629</td>
+<td style="text-align: right;">6.04282e6</td>
+<td style="text-align: right;">2.13373e6</td>
+<td style="text-align: right;">13.8</td>
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">15.37</td>
+<td style="text-align: right;">11.2</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right;">3221</td>
+<td style="text-align: right;">3229</td>
+<td style="text-align: right;">31.71</td>
+<td style="text-align: right;">2.06</td>
+</tr>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">3</td>
+<td style="text-align: right;">3199</td>
+<td style="text-align: right;">9329</td>
+<td style="text-align: right;">575</td>
+<td style="text-align: right;">1113434067800</td>
+<td style="text-align: right;">17.026</td>
+<td style="text-align: right;">1237.59</td>
+<td style="text-align: right;">6.04268e6</td>
+<td style="text-align: right;">2.1343e6</td>
+<td style="text-align: right;">14.4</td>
+<td style="text-align: right;">5.9</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">39.3</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right;">3188</td>
+<td style="text-align: right;">3206</td>
+<td style="text-align: right;">72.36</td>
+<td style="text-align: right;">1.84</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">4</td>
+<td style="text-align: right;">3159</td>
+<td style="text-align: right;">8919</td>
+<td style="text-align: right;">572</td>
+<td style="text-align: right;">1113434026800</td>
+<td style="text-align: right;">16.541</td>
+<td style="text-align: right;">306.905</td>
+<td style="text-align: right;">6.04281e6</td>
+<td style="text-align: right;">2.13337e6</td>
+<td style="text-align: right;">16.4</td>
+<td style="text-align: right;">5.9</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">14.71</td>
+<td style="text-align: right;">3.61</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right;">3152</td>
+<td style="text-align: right;">3171</td>
+<td style="text-align: right;">51.9</td>
+<td style="text-align: right;">3.53</td>
+</tr>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">5</td>
+<td style="text-align: right;">3314</td>
+<td style="text-align: right;">9324</td>
+<td style="text-align: right;">616</td>
+<td style="text-align: right;">1113434067300</td>
+<td style="text-align: right;">28.846</td>
+<td style="text-align: right;">65.807</td>
+<td style="text-align: right;">6.04285e6</td>
+<td style="text-align: right;">2.13314e6</td>
+<td style="text-align: right;">14.8</td>
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">36.24</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right;">3301</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">103.26</td>
+<td style="text-align: right;">2.85</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="clean-dataframe-names" class="level2">
+<h2 class="anchored" data-anchor-id="clean-dataframe-names">Clean dataframe names</h2>
+<p>As you can see above, the column names are in good shape i.e., without any spaces. However, it is easier typing lowercase letters than the sentence case. So, we use the <code>clean_names</code> macro from the <code>TidierData</code> package to make all column names lower case. If the column names have spaces or periods in them, <code>clean_names</code> would replace them with underscores.</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">TidierData</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>data_jl <span class="op">=</span> <span class="pp">@clean_names</span>(data_jl)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="pp">@glimpse</span>(data_jl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 1250932
+Columns: 24
+.vehicle_id    Union{Missing, Int32}3027, 3214, 3199, 3159, 3314, 3128, 3031, 29
+.frame_id      Union{Missing, Int32}8493, 9115, 9329, 8919, 9324, 9052, 9030, 86
+.total_frames  Union{Missing, Int32}813, 708, 575, 572, 616, 603, 958, 987, 760,
+.global_time   Union{Missing, Int64}1113433984200, 1113434046400, 1113434067800,
+.local_x       Union{Missing, Float64}53.115, 67.931, 17.026, 16.541, 28.846, 17
+.local_y       Union{Missing, Float64}363.266, 655.629, 1237.592, 306.905, 65.80
+.global_x      Union{Missing, Float64}6.042839372e6, 6.042817933e6, 6.042683444e
+.global_y      Union{Missing, Float64}2.133434927e6, 2.133726884e6, 2.134296961e
+.v_length      Union{Missing, Float64}15.3, 13.8, 14.4, 16.4, 14.8, 16.8, 15.3, 
+.v_width       Union{Missing, Float64}7.4, 6.3, 5.9, 5.9, 6.4, 8.5, 7.4, 5.8, 8.
+.v_class       Union{Missing, Int32}2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+.v_vel         Union{Missing, Float64}21.46, 15.37, 39.3, 14.71, 36.24, 35.69, 2
+.v_acc         Union{Missing, Float64}-8.14, 11.2, 0.0, 3.61, 0.0, 11.2, 10.8, -
+.lane_id       Union{Missing, Int32}5, 6, 2, 2, 3, 2, 4, 4, 5, 5, 4, 6, 6, 2, 4,
+.o_zone        Union{Missing, Int32}missing, missing, missing, missing, missing,
+.d_zone        Union{Missing, Int32}missing, missing, missing, missing, missing,
+.int_id        Union{Missing, Int32}missing, missing, missing, missing, missing,
+.section_id    Union{Missing, Int32}missing, missing, missing, missing, missing,
+.direction     Union{Missing, Int32}missing, missing, missing, missing, missing,
+.movement      Union{Missing, Int32}missing, missing, missing, missing, missing,
+.preceding     Union{Missing, Int32}3014, 3221, 3188, 3152, 3301, 3125, 0, 2973,
+.following     Union{Missing, Int32}3032, 3229, 3206, 3171, 0, 3132, 3032, 2987,
+.space_headway Union{Missing, Float64}64.23, 31.71, 72.36, 51.9, 103.26, 90.81, 
+.time_headway  Union{Missing, Float64}2.99, 2.06, 1.84, 3.53, 2.85, 2.54, 0.0, 3</code></pre>
+</div>
+</div>
+<p>The <code>@glimpse</code> macro shows that all variable names are now in lower case now. But variables have the <code>Missing</code> type common. This is perhaps because some of the columns have missing values. Let’s look at 2 variables:</p>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(x <span class="op">-&gt;</span> <span class="fu">ismissing</span>(x), data_jl.frame_id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>0</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(x <span class="op">-&gt;</span> <span class="fu">ismissing</span>(x), data_jl.o_zone)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>1250932</code></pre>
+</div>
+</div>
+<p>We therefore remove all the columns that have missing values (completely missing!). Even after that, one of the <em>type</em> of the remaining variables is <code>Missing</code>. So, we replace missing values with zero just to change the type:</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>data_jl <span class="op">=</span> <span class="pp">@select</span>(data_jl, <span class="fu">Not</span>(<span class="op">:</span>o_zone, <span class="op">:</span>d_zone, <span class="op">:</span>int_id, <span class="op">:</span>section_id, <span class="op">:</span>direction, <span class="op">:</span>movement))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> <span class="fu">names</span>(data_jl)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    data_jl[!, col] <span class="op">.=</span> <span class="fu">coalesce</span>.(data_jl[!, col], <span class="fl">0</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="how-to-create-a-time-column" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-create-a-time-column">How to create a time column?</h2>
+<p>Since vehicle trajectories change over time, it is nice to see these changes over different time periods. However, the <code>gloabl_time</code> column in this dataset contains integers rather than the actual time. So, we create a new column called <code>actual_time</code> by dividing the <code>global_time</code> by 1000 and converting it to a datetime object.</p>
+<p>In Julia, this can be done via <code>Dates</code> package. The integer to datetime data conversion will report time in UTC. But the data were collected in Los Angeles, so we want to specify the <code>America/Los_Angeles</code> time zone. Thus, we subtract 7 hours as UTC is 7 hours ahead of PDT:</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Dates</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>data_jl.actual_time <span class="op">=</span> <span class="fu">DateTime</span>.(<span class="bu">Dates</span>.<span class="fu">unix2datetime</span>.(data_jl.global_time <span class="op">./</span> <span class="fl">1000</span>))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>data_jl.actual_time <span class="op">=</span> data_jl.actual_time <span class="op">.-</span> <span class="fu">Hour</span>(<span class="fl">7</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(data_jl, <span class="fl">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div><div style="float: left;"><span>5×19 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
+<table class="data-frame table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header header">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">Row</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">vehicle_id</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">frame_id</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">total_frames</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">global_time</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">local_x</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">local_y</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">global_x</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">global_y</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_length</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_width</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_class</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_vel</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_acc</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">lane_id</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">following</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">space_headway</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">time_headway</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">actual_time</th>
+</tr>
+<tr class="odd subheader headerLastRow">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int64">Int64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="DateTime">DateTime</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">1</td>
+<td style="text-align: right;">3027</td>
+<td style="text-align: right;">8493</td>
+<td style="text-align: right;">813</td>
+<td style="text-align: right;">1113433984200</td>
+<td style="text-align: right;">53.115</td>
+<td style="text-align: right;">363.266</td>
+<td style="text-align: right;">6.04284e6</td>
+<td style="text-align: right;">2.13343e6</td>
+<td style="text-align: right;">15.3</td>
+<td style="text-align: right;">7.4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">21.46</td>
+<td style="text-align: right;">-8.14</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">3014</td>
+<td style="text-align: right;">3032</td>
+<td style="text-align: right;">64.23</td>
+<td style="text-align: right;">2.99</td>
+<td style="text-align: left;">2005-04-13T16:13:04.200</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">2</td>
+<td style="text-align: right;">3214</td>
+<td style="text-align: right;">9115</td>
+<td style="text-align: right;">708</td>
+<td style="text-align: right;">1113434046400</td>
+<td style="text-align: right;">67.931</td>
+<td style="text-align: right;">655.629</td>
+<td style="text-align: right;">6.04282e6</td>
+<td style="text-align: right;">2.13373e6</td>
+<td style="text-align: right;">13.8</td>
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">15.37</td>
+<td style="text-align: right;">11.2</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">3221</td>
+<td style="text-align: right;">3229</td>
+<td style="text-align: right;">31.71</td>
+<td style="text-align: right;">2.06</td>
+<td style="text-align: left;">2005-04-13T16:14:06.400</td>
+</tr>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">3</td>
+<td style="text-align: right;">3199</td>
+<td style="text-align: right;">9329</td>
+<td style="text-align: right;">575</td>
+<td style="text-align: right;">1113434067800</td>
+<td style="text-align: right;">17.026</td>
+<td style="text-align: right;">1237.59</td>
+<td style="text-align: right;">6.04268e6</td>
+<td style="text-align: right;">2.1343e6</td>
+<td style="text-align: right;">14.4</td>
+<td style="text-align: right;">5.9</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">39.3</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3188</td>
+<td style="text-align: right;">3206</td>
+<td style="text-align: right;">72.36</td>
+<td style="text-align: right;">1.84</td>
+<td style="text-align: left;">2005-04-13T16:14:27.800</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">4</td>
+<td style="text-align: right;">3159</td>
+<td style="text-align: right;">8919</td>
+<td style="text-align: right;">572</td>
+<td style="text-align: right;">1113434026800</td>
+<td style="text-align: right;">16.541</td>
+<td style="text-align: right;">306.905</td>
+<td style="text-align: right;">6.04281e6</td>
+<td style="text-align: right;">2.13337e6</td>
+<td style="text-align: right;">16.4</td>
+<td style="text-align: right;">5.9</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">14.71</td>
+<td style="text-align: right;">3.61</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3152</td>
+<td style="text-align: right;">3171</td>
+<td style="text-align: right;">51.9</td>
+<td style="text-align: right;">3.53</td>
+<td style="text-align: left;">2005-04-13T16:13:46.800</td>
+</tr>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">5</td>
+<td style="text-align: right;">3314</td>
+<td style="text-align: right;">9324</td>
+<td style="text-align: right;">616</td>
+<td style="text-align: right;">1113434067300</td>
+<td style="text-align: right;">28.846</td>
+<td style="text-align: right;">65.807</td>
+<td style="text-align: right;">6.04285e6</td>
+<td style="text-align: right;">2.13314e6</td>
+<td style="text-align: right;">14.8</td>
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">36.24</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3301</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">103.26</td>
+<td style="text-align: right;">2.85</td>
+<td style="text-align: left;">2005-04-13T16:14:27.300</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Note that the data is not in the correct order. The <code>vehicle_id</code>s in the first two rows are 3027 and 3214. However, we know that the same vehicle was observed for several seconds. This means that we should see a given <code>vehicle_id</code> repeated over multiple rows consecutively. We therefore sort by <code>vehicle_id</code> and <code>frame_id</code>:</p>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">## First: Sort by Vehicle ID and Time</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>data_jl <span class="op">=</span> <span class="pp">@arrange</span>(data_jl, vehicle_id, frame_id)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(data_jl, <span class="fl">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<div><div style="float: left;"><span>5×19 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
+<table class="data-frame table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header header">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">Row</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">vehicle_id</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">frame_id</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">total_frames</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">global_time</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">local_x</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">local_y</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">global_x</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">global_y</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_length</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_width</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_class</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_vel</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_acc</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">lane_id</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">following</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">space_headway</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">time_headway</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">actual_time</th>
+</tr>
+<tr class="odd subheader headerLastRow">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int64">Int64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="DateTime">DateTime</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">884</td>
+<td style="text-align: right;">1113433136100</td>
+<td style="text-align: right;">16.884</td>
+<td style="text-align: right;">48.213</td>
+<td style="text-align: right;">6.04284e6</td>
+<td style="text-align: right;">2.13312e6</td>
+<td style="text-align: right;">14.3</td>
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.100</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">884</td>
+<td style="text-align: right;">1113433136200</td>
+<td style="text-align: right;">16.938</td>
+<td style="text-align: right;">49.463</td>
+<td style="text-align: right;">6.04284e6</td>
+<td style="text-align: right;">2.13312e6</td>
+<td style="text-align: right;">14.3</td>
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.200</td>
+</tr>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">884</td>
+<td style="text-align: right;">1113433136300</td>
+<td style="text-align: right;">16.991</td>
+<td style="text-align: right;">50.712</td>
+<td style="text-align: right;">6.04284e6</td>
+<td style="text-align: right;">2.13312e6</td>
+<td style="text-align: right;">14.3</td>
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.300</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">884</td>
+<td style="text-align: right;">1113433136400</td>
+<td style="text-align: right;">17.045</td>
+<td style="text-align: right;">51.963</td>
+<td style="text-align: right;">6.04284e6</td>
+<td style="text-align: right;">2.13312e6</td>
+<td style="text-align: right;">14.3</td>
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.400</td>
+</tr>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">5</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">884</td>
+<td style="text-align: right;">1113433136500</td>
+<td style="text-align: right;">17.098</td>
+<td style="text-align: right;">53.213</td>
+<td style="text-align: right;">6.04284e6</td>
+<td style="text-align: right;">2.13312e6</td>
+<td style="text-align: right;">14.3</td>
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.500</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>When we want to compare several vehicle trajectories, e.g., how their speeds change over time regardless of when they were observed, we’d want a common time scale. The NGSIM documentation describes that vehicles were observed at a resolution of 0.1 seconds. So, we can create a<code>time</code> variable for each vehicle that starts at 0 and ends at (n-1)/10 where n = number of rows for which a <code>vehicle_id</code> is repeated:</p>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode julia code-annotation-code code-with-copy code-annotated"><code class="sourceCode julia"><span id="annotated-cell-8-1"><a href="#annotated-cell-8-1" aria-hidden="true" tabindex="-1"></a>data_jl <span class="op">=</span> <span class="pp">@chain</span> data_jl <span class="cf">begin</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="1">1</button><span id="annotated-cell-8-2" class="code-annotation-target"><a href="#annotated-cell-8-2" aria-hidden="true" tabindex="-1"></a>    <span class="pp">@group_by</span>(vehicle_id)</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="2">2</button><span id="annotated-cell-8-3" class="code-annotation-target"><a href="#annotated-cell-8-3" aria-hidden="true" tabindex="-1"></a>    <span class="pp">@mutate</span>(time <span class="op">=</span> (<span class="fl">0</span><span class="op">:</span>(<span class="fu">first</span>(<span class="fu">n</span>()) <span class="op">-</span> <span class="fl">1</span>))<span class="op">/</span><span class="fl">10</span>)</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="3">3</button><span id="annotated-cell-8-4" class="code-annotation-target"><a href="#annotated-cell-8-4" aria-hidden="true" tabindex="-1"></a>    <span class="pp">@ungroup</span>()</span>
+<span id="annotated-cell-8-5"><a href="#annotated-cell-8-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span>;</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-8" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-lines="2" data-code-cell="annotated-cell-8" data-code-annotation="1">Group by <code>vehicle_id</code> so that <code>time</code> is calculated for each vehicle separately.<br>
+</span>
+</dd>
+<dt data-target-cell="annotated-cell-8" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-lines="3" data-code-cell="annotated-cell-8" data-code-annotation="2"><code>n()</code> gives the group size.<br>
+</span>
+</dd>
+<dt data-target-cell="annotated-cell-8" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-lines="4" data-code-cell="annotated-cell-8" data-code-annotation="3">Don’t forget to <code>ungroup</code>.</span>
+</dd>
+</dl>
+</div>
+</div>
+</section>
+<section id="how-to-create-variables-for-the-preceding-vehicle" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-create-variables-for-the-preceding-vehicle">How to create variables for the preceding vehicle?</h2>
+<p>We’d often need velocity, acceleration, and other variables for the preceding vehicle (vehicle in front of the subject vehicle). These variables can be useful in car-following modeling.</p>
+<p>In this dataset, preceding vehicle variables do not exist as separate columns. The only relevant column is <code>preceding</code> which is the identifier of the preceding vehicle. But the data also contains the subject vehicle identifier <code>vehicle_id</code>, along with these variables:</p>
+<ul>
+<li><code>local_y</code>: longitudinal position of the front end of the subject vehicle (feet)<br>
+</li>
+<li><code>local_x</code>: lateral position of the front end of the subject vehicle (feet)<br>
+</li>
+<li><code>v_length</code> and <code>v_width</code> are the length and width of the subject vehicle (feet)<br>
+</li>
+<li><code>v_class</code> is the class of the subject vehicle, i.e., 1 = motorcycle, 2 = car, and 3 = heavy vehicle (bus/truck)<br>
+</li>
+<li><code>v_vel</code> and <code>v_acc</code> are the velocity (ft/s) and acceleration (ft/s/s) of the subject vehicle</li>
+</ul>
+<p>Our goal now is to create new columns of the above variables for the preceding vehicle. To this end, we look for the value of <code>preceding</code> in the <code>vehicle_id</code> column at a given value of <code>frame_id</code> (identifier of time frame) and then grab the value of variable e.g., <code>v_vel</code> at that <code>frame_id</code>. In Julia, we achieve this by joining a few columns of the dataset with the full dataset while using the columns <code>vehicle_id</code> and <code>preceding</code> for the join:</p>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Join</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>data_jl <span class="op">=</span> <span class="fu">leftjoin</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>           data_jl,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>           data_jl[<span class="op">:</span>, [<span class="op">:</span>frame_id, <span class="op">:</span>vehicle_id, <span class="op">:</span>local_y, <span class="op">:</span>v_length, <span class="op">:</span>v_width, <span class="op">:</span>v_class, <span class="op">:</span>v_vel, <span class="op">:</span>v_acc]],</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>           on <span class="op">=</span> [<span class="op">:</span>frame_id <span class="op">=&gt;</span> <span class="op">:</span>frame_id, <span class="op">:</span>preceding <span class="op">=&gt;</span> <span class="op">:</span>vehicle_id],</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>           makeunique <span class="op">=</span> <span class="cn">true</span>, </span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>           renamecols <span class="op">=</span> <span class="st">""</span> <span class="op">=&gt;</span> <span class="st">"_preceding"</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>       )</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Arrange again</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>data_jl <span class="op">=</span> <span class="pp">@arrange</span>(data_jl, vehicle_id, frame_id)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Rename columns to match with naming in R and Python posts</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>data_jl <span class="op">=</span> <span class="pp">@chain</span> data_jl <span class="cf">begin</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    <span class="pp">@rename</span>(preceding_local_y <span class="op">=</span> local_y_preceding,</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>            preceding_length <span class="op">=</span>  v_length_preceding,</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>            preceding_width <span class="op">=</span> v_width_preceding,</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>            preceding_class <span class="op">=</span> v_class_preceding,</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>            preceding_vel <span class="op">=</span> v_vel_preceding,</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>            preceding_acc <span class="op">=</span> v_acc_preceding)</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(data_jl, <span class="fl">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<div><div style="float: left;"><span>5×26 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
+<table class="data-frame table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header header">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">Row</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">vehicle_id</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">frame_id</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">total_frames</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">global_time</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">local_x</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">local_y</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">global_x</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">global_y</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_length</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_width</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_class</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_vel</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_acc</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">lane_id</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">following</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">space_headway</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">time_headway</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">actual_time</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">time</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_local_y</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_length</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_width</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_class</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_vel</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_acc</th>
+</tr>
+<tr class="odd subheader headerLastRow">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int64">Int64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="DateTime">DateTime</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Int32}">Int32?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">884</td>
+<td style="text-align: right;">1113433136100</td>
+<td style="text-align: right;">16.884</td>
+<td style="text-align: right;">48.213</td>
+<td style="text-align: right;">6.04284e6</td>
+<td style="text-align: right;">2.13312e6</td>
+<td style="text-align: right;">14.3</td>
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.100</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">884</td>
+<td style="text-align: right;">1113433136200</td>
+<td style="text-align: right;">16.938</td>
+<td style="text-align: right;">49.463</td>
+<td style="text-align: right;">6.04284e6</td>
+<td style="text-align: right;">2.13312e6</td>
+<td style="text-align: right;">14.3</td>
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.200</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+</tr>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">884</td>
+<td style="text-align: right;">1113433136300</td>
+<td style="text-align: right;">16.991</td>
+<td style="text-align: right;">50.712</td>
+<td style="text-align: right;">6.04284e6</td>
+<td style="text-align: right;">2.13312e6</td>
+<td style="text-align: right;">14.3</td>
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.300</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">884</td>
+<td style="text-align: right;">1113433136400</td>
+<td style="text-align: right;">17.045</td>
+<td style="text-align: right;">51.963</td>
+<td style="text-align: right;">6.04284e6</td>
+<td style="text-align: right;">2.13312e6</td>
+<td style="text-align: right;">14.3</td>
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.400</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+</tr>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">5</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">884</td>
+<td style="text-align: right;">1113433136500</td>
+<td style="text-align: right;">17.098</td>
+<td style="text-align: right;">53.213</td>
+<td style="text-align: right;">6.04284e6</td>
+<td style="text-align: right;">2.13312e6</td>
+<td style="text-align: right;">14.3</td>
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.500</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>In this dataset, <code>missing</code> indicates that the value is missing because there was no preceding vehicle observed. For <code>vehicle_id</code> 1 we can see this is true because the <code>preceding</code> value is 0.</p>
+</section>
+<section id="how-to-remove-undesired-columns" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-remove-undesired-columns">How to remove undesired columns?</h2>
+<p>There are several variables in this dataset that we don’t need as they are completely devoid of any value. We have removed those variables already. We further remove variables that we don’t need for analysis:</p>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>data_jl <span class="op">=</span> <span class="pp">@select</span>(data_jl, <span class="fu">Not</span>(<span class="op">:</span>total_frames, <span class="fu">starts_with</span>(<span class="st">"global"</span>), <span class="op">:</span>following))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(data_jl, <span class="fl">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<div><div style="float: left;"><span>5×21 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
+<table class="data-frame table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header header">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">Row</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">vehicle_id</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">frame_id</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">local_x</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">local_y</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_length</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_width</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_class</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_vel</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_acc</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">lane_id</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">space_headway</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">time_headway</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">actual_time</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">time</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_local_y</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_length</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_width</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_class</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_vel</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_acc</th>
+</tr>
+<tr class="odd subheader headerLastRow">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="DateTime">DateTime</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Int32}">Int32?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">16.884</td>
+<td style="text-align: right;">48.213</td>
+<td style="text-align: right;">14.3</td>
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.100</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">16.938</td>
+<td style="text-align: right;">49.463</td>
+<td style="text-align: right;">14.3</td>
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.200</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+</tr>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">16.991</td>
+<td style="text-align: right;">50.712</td>
+<td style="text-align: right;">14.3</td>
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.300</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">17.045</td>
+<td style="text-align: right;">51.963</td>
+<td style="text-align: right;">14.3</td>
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.400</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+</tr>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">5</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">17.098</td>
+<td style="text-align: right;">53.213</td>
+<td style="text-align: right;">14.3</td>
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.500</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="how-to-transform-multiple-columns" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-transform-multiple-columns">How to transform multiple columns?</h2>
+<section id="metric-units" class="level3">
+<h3 class="anchored" data-anchor-id="metric-units">Metric units</h3>
+<p><img src="https://media.giphy.com/media/xUPGcAx3wr7jszFfpe/giphy.gif" class="img-fluid"></p>
+<p>As discussed before, variables in this dataset have imperial units (feet, ft/s, etc.). You may want to transform the values of these variables to metric units. The conversion factor is 0.3048. Here, we write a function to take a column and apply the conversion factor along with rounding to 2 decimal places:</p>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">## metric units</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">convert_and_round</span>(x)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fu">round</span>(x <span class="op">*</span> <span class="fl">0.3048</span>, digits<span class="op">=</span><span class="fl">2</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>cols_to_mutate <span class="op">=</span> [<span class="st">"local_x"</span>, <span class="st">"local_y"</span>, <span class="st">"v_length"</span>, <span class="st">"v_width"</span>, </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"v_vel"</span>, <span class="st">"v_acc"</span>, <span class="st">"space_headway"</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"preceding_local_y"</span>, <span class="st">"preceding_length"</span>, <span class="st">"preceding_width"</span>,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"preceding_vel"</span>, <span class="st">"preceding_acc"</span>]</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> cols_to_mutate</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    data_jl[!, col] <span class="op">.=</span> <span class="fu">convert_and_round</span>.(data_jl[!, col])</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(data_jl, <span class="fl">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<div><div style="float: left;"><span>5×21 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
+<table class="data-frame table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header header">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">Row</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">vehicle_id</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">frame_id</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">local_x</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">local_y</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_length</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_width</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_class</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_vel</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_acc</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">lane_id</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">space_headway</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">time_headway</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">actual_time</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">time</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_local_y</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_length</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_width</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_class</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_vel</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_acc</th>
+</tr>
+<tr class="odd subheader headerLastRow">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="DateTime">DateTime</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Int32}">Int32?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">5.15</td>
+<td style="text-align: right;">14.7</td>
+<td style="text-align: right;">4.36</td>
+<td style="text-align: right;">1.95</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3.81</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.100</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">5.16</td>
+<td style="text-align: right;">15.08</td>
+<td style="text-align: right;">4.36</td>
+<td style="text-align: right;">1.95</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3.81</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.200</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+</tr>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">5.18</td>
+<td style="text-align: right;">15.46</td>
+<td style="text-align: right;">4.36</td>
+<td style="text-align: right;">1.95</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3.81</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.300</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">5.2</td>
+<td style="text-align: right;">15.84</td>
+<td style="text-align: right;">4.36</td>
+<td style="text-align: right;">1.95</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3.81</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.400</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+</tr>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">5</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">5.21</td>
+<td style="text-align: right;">16.22</td>
+<td style="text-align: right;">4.36</td>
+<td style="text-align: right;">1.95</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3.81</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.500</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="convert-numbers-to-string-data-type" class="level3">
+<h3 class="anchored" data-anchor-id="convert-numbers-to-string-data-type">Convert numbers to string data type</h3>
+<p>Moreover, we know that there are variables that should be treated as categorical (qualitative) rather than numbers. For instance, <code>lane_id</code> has values 1-7 and we know that these are identifiers for lanes. Similarly, the class of a vehicle is encoded as 1, 2, and 3 but we know that these numbers do not have any quantitaive information, rather they are categories.</p>
+<p>We use the <code>string</code> function to convert numbers to string data type:</p>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>data_jl[!,<span class="op">:</span>vehicle_id] <span class="op">=</span> <span class="fu">string</span>.(data_jl[!,<span class="op">:</span>vehicle_id])</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>data_jl[!,<span class="op">:</span>v_class] <span class="op">=</span> <span class="fu">string</span>.(data_jl[!,<span class="op">:</span>v_class])</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>data_jl[!,<span class="op">:</span>lane_id] <span class="op">=</span> <span class="fu">string</span>.(data_jl[!,<span class="op">:</span>lane_id])</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>data_jl[!,<span class="op">:</span>preceding] <span class="op">=</span> <span class="fu">string</span>.(data_jl[!,<span class="op">:</span>preceding])</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>data_jl[!,<span class="op">:</span>preceding_class] <span class="op">=</span> <span class="fu">string</span>.(data_jl[!,<span class="op">:</span>preceding_class])</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(data_jl, <span class="fl">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<div><div style="float: left;"><span>5×21 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
+<table class="data-frame table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header header">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">Row</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">vehicle_id</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">frame_id</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">local_x</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">local_y</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_length</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_width</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_class</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_vel</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v_acc</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">lane_id</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">space_headway</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">time_headway</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">actual_time</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">time</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_local_y</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_length</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_width</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_class</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_vel</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">preceding_acc</th>
+</tr>
+<tr class="odd subheader headerLastRow">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="String">String</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int32">Int32</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="String">String</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="String">String</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="String">String</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="DateTime">DateTime</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="String">String</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">1</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">5.15</td>
+<td style="text-align: right;">14.7</td>
+<td style="text-align: right;">4.36</td>
+<td style="text-align: right;">1.95</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">3.81</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.100</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: left;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">2</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">5.16</td>
+<td style="text-align: right;">15.08</td>
+<td style="text-align: right;">4.36</td>
+<td style="text-align: right;">1.95</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">3.81</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.200</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: left;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+</tr>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">3</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">5.18</td>
+<td style="text-align: right;">15.46</td>
+<td style="text-align: right;">4.36</td>
+<td style="text-align: right;">1.95</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">3.81</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.300</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: left;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">4</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">5.2</td>
+<td style="text-align: right;">15.84</td>
+<td style="text-align: right;">4.36</td>
+<td style="text-align: right;">1.95</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">3.81</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.400</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: left;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+</tr>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">5</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">5.21</td>
+<td style="text-align: right;">16.22</td>
+<td style="text-align: right;">4.36</td>
+<td style="text-align: right;">1.95</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">3.81</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">2005-04-13T15:58:56.500</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: left;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+<td style="text-align: right; font-style: italic;">missing</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="visualization-with-one-vehicle" class="level2">
+<h2 class="anchored" data-anchor-id="visualization-with-one-vehicle">Visualization with one vehicle</h2>
+<p>Cool! We are almost done with transforming our dataset. It is time to do some visualization. The last transformation we learn is to filter the data to keep only one vehicle:</p>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>data_jl_veh <span class="op">=</span> <span class="pp">@filter</span>(data_jl, vehicle_id <span class="op">==</span> <span class="st">"2"</span>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>And now we use <code>TidierPlots</code> to create a plot of velocity over time. Subject vehicle in blue and preceding vehicle in orange.</p>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">TidierPlots</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data <span class="op">=</span> data_jl_veh) <span class="op">+</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>(<span class="fu">aes</span>(x <span class="op">=</span> <span class="st">"time"</span>, y <span class="op">=</span> <span class="st">"v_vel"</span>), color <span class="op">=</span> <span class="st">"blue"</span>) <span class="op">+</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>(<span class="fu">aes</span>(x <span class="op">=</span> <span class="st">"time"</span>, y <span class="op">=</span> <span class="st">"preceding_vel"</span>), color <span class="op">=</span> <span class="st">"orange"</span>) <span class="op">+</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(x <span class="op">=</span> <span class="st">"Time (s)"</span>, y <span class="op">=</span> <span class="st">"Velocity (m/s)"</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>       title <span class="op">=</span> <span class="st">"Velocity of vehicle # 2 and its preceding vehicle"</span>) <span class="op">+</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>height: 400
+x: Time (s)
+title: Velocity of vehicle # 2 and its preceding vehicle
+width: 600
+y: Velocity (m/s)
+
+geom_path
+data: inherits from plot
+x: time 
+y: v_vel 
+
+geom_path
+data: inherits from plot
+x: time 
+y: preceding_vel 
+</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="transform_jl_files/figure-html/cell-15-output-2.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<div class="ansi-escaped-output">
+<pre><span style="text-decoration:underline">ggplot options</span>
+<span class="ansi-blue-fg">data: A DataFrame (415 rows, 21 columns)</span>
+</pre>
+</div>
+</div>
+</div>
+<p>As you see, the lead vehicle speed is not seen after about 17 seconds. This is because the lead vehicle changed lanes.</p>
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{durrani2024,
+  author = {Durrani, Umair},
+  title = {Transform {Data} with {Julia}},
+  date = {2024-03-10},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-durrani2024" class="csl-entry quarto-appendix-citeas" role="listitem">
+Durrani, Umair. 2024. <span>“Transform Data with Julia.”</span> March
+10, 2024.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Handle positioning of the toggle
+      window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+      const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+      for (let i=0; i<annoteTargets.length; i++) {
+        const annoteTarget = annoteTargets[i];
+        const targetCell = annoteTarget.getAttribute("data-target-cell");
+        const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+        const contentFn = () => {
+          const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          if (content) {
+            const tipContent = content.cloneNode(true);
+            tipContent.classList.add("code-annotation-tip-content");
+            return tipContent.outerHTML;
+          }
+        }
+        const config = {
+          allowHTML: true,
+          content: contentFn,
+          onShow: (instance) => {
+            selectCodeLines(instance.reference);
+            instance.reference.classList.add('code-annotation-active');
+            window.tippy.hideAll();
+          },
+          onHide: (instance) => {
+            unselectCodeLines();
+            instance.reference.classList.remove('code-annotation-active');
+          },
+          maxWidth: 300,
+          delay: [50, 0],
+          duration: [200, 0],
+          offset: [5, 10],
+          arrow: true,
+          appendTo: function(el) {
+            return el.parentElement.parentElement.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'quarto',
+          placement: 'right',
+          popperOptions: {
+            modifiers: [
+            {
+              name: 'flip',
+              options: {
+                flipVariations: false, // true by default
+                allowedAutoPlacements: ['right'],
+                fallbackPlacements: ['right', 'top', 'top-start', 'top-end'],
+              },
+            },
+            {
+              name: 'preventOverflow',
+              options: {
+                mainAxis: false,
+                altAxis: false
+              }
+            }
+            ]        
+          }      
+        };
+        window.tippy(annoteTarget, config); 
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

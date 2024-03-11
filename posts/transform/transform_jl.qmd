@@ -2,8 +2,9 @@
 title: "Transform Data with Julia"
 date: "2024-03-10"
 categories: [import, transform, Tidier.jl]
-image: ""
+image: "Tidier_jl_logo.png"
 code-annotations: hover
+engine: jupyter
 ---
 
 ::: {.callout-note}
@@ -38,30 +39,49 @@ We now make use of the parquet file in the `period=first` directory for learning
 
 ## Load parquet file 
 
-Reading the parquet file requires the `arrow` package:  
+Reading the parquet file requires the `Parquet2` package:  
 
-```{r rread}
-library(arrow)
-library(dplyr)
+```{julia rread}
+# ] add Parquet2
+using DataFrames
+using Parquet2: Dataset
+path_to_first_period_file = "data/i80_period1.parquet"
+data_jl = DataFrame(Dataset(path_to_first_period_file));
 
-path_to_first_period_file <- "data/i80_period1.parquet"
-data_R <- arrow::read_parquet(file = path_to_first_period_file)
-
-head(data_R)
+first(data_jl, 5)
 ```
 
 
 
 ## Clean dataframe names
 
-As you can see above, the column names are in good shape i.e., without any spaces. However, it is easier typing lowercase letters than the sentence case. So, we use the `clean_names` function from the `janitor` package to make all column names lowercase. If the column names have spaces or periods in them, `clean_names` would replace them with underscores.   
+As you can see above, the column names are in good shape i.e., without any spaces. However, it is easier typing lowercase letters than the sentence case. So, we use the `clean_names` macro from the `TidierData` package to make all column names lower case. If the column names have spaces or periods in them, `clean_names` would replace them with underscores.   
 
 
-```{r rclean}
-library(janitor)
-data_R <- janitor::clean_names(data_R) 
+```{julia rclean}
+using TidierData
+data_jl = @clean_names(data_jl)
 
-head(data_R)
+@glimpse(data_jl)
+```
+
+The `@glimpse` macro shows that all variable names are now in lower case now. But variables have the `Missing` type common. This is perhaps because some of the columns have missing values. Let's look at 2 variables:
+
+```{julia}
+count(x -> ismissing(x), data_jl.frame_id)
+```
+
+```{julia}
+count(x -> ismissing(x), data_jl.o_zone)
+```
+
+We therefore remove all the columns that have missing values (completely missing!). Even after that, one of the *type* of the remaining variables is `Missing`. So, we replace missing values with zero just to change the type:
+
+```{julia}
+data_jl = @select(data_jl, Not(:o_zone, :d_zone, :int_id, :section_id, :direction, :movement))
+for col in names(data_jl)
+    data_jl[!, col] .= coalesce.(data_jl[!, col], 0)
+end
 ```
 
 
@@ -70,43 +90,39 @@ head(data_R)
 
 Since vehicle trajectories change over time, it is nice to see these changes over different time periods. However, the `gloabl_time` column in this dataset contains integers rather than the actual time. So, we create a new column called `actual_time` by dividing the `global_time` by 1000 and converting it to a datetime object.  
 
-In R, this can be done via `lubridate::as_datetime`. Note that we specify the time zone to be `America/Los_Angeles`.  
+In Julia, this can be done via `Dates` package. The integer to datetime data conversion will report time in UTC. But the data were collected in Los Angeles, so we want to specify the `America/Los_Angeles` time zone. Thus, we subtract 7 hours as UTC is 7 hours ahead of PDT:
 
-```{r rtime1}
-library(lubridate)
+```{julia rtime1}
+using Dates
 
-data_R <- data_R |>
-  dplyr::mutate(actual_time = lubridate::as_datetime(global_time / 1000, 
-    origin = "1970-01-01",
-    tz = "America/Los_Angeles"
-  ))
+data_jl.actual_time = DateTime.(Dates.unix2datetime.(data_jl.global_time ./ 1000))
+data_jl.actual_time = data_jl.actual_time .- Hour(7)
 
-head(data_R)
+first(data_jl, 5)
 ```
-
+  
+  
 
 Note that the data is not in the correct order. The `vehicle_id`s in the first two rows are 3027 and 3214. However, we know that the same vehicle was observed for several seconds. This means that we should see a given `vehicle_id` repeated over multiple rows consecutively. We therefore sort by `vehicle_id` and `frame_id`:  
 
-```{r rtime2}
+```{julia rtime2}
 ## First: Sort by Vehicle ID and Time
-data_R <- data_R |> 
-  dplyr::arrange(vehicle_id, frame_id)
-
-head(data_R)
+data_jl = @arrange(data_jl, vehicle_id, frame_id)
+first(data_jl, 5)
 ```
-
+  
+  
 When we want to compare several vehicle trajectories, e.g., how their speeds change over time regardless of when they were observed, we'd want a common time scale. The NGSIM documentation describes that vehicles were observed at a resolution of 0.1 seconds. So, we can create a`time` variable for each vehicle that starts at 0 and ends at (n-1)/10 where n = number of rows for which a `vehicle_id` is repeated:  
 
-```{r rtime3}
-data_R <- data_R |> 
-  dplyr::group_by(vehicle_id) |>   # <1> 
-  dplyr::mutate(time = (0:(dplyr::n()-1))/10) |>  # <2>
-  dplyr::ungroup() # <3>
-
-head(data_R)
+```{julia rtime3}
+data_jl = @chain data_jl begin
+    @group_by(vehicle_id) # <1>
+    @mutate(time = (0:(first(n()) - 1))/10) # <2>
+    @ungroup() # <3>
+end;
 ```
 1. Group by `vehicle_id` so that `time` is calculated for each vehicle separately.  
-2. `dplyr::n()` gives the group size.  
+2. `n()` gives the group size.  
 3. Don't forget to `ungroup`.  
 
 
@@ -123,41 +139,47 @@ In this dataset, preceding vehicle variables do not exist as separate columns. T
 * `v_class` is the class of the subject vehicle, i.e., 1 = motorcycle, 2 = car, and 3 = heavy vehicle (bus/truck)  
 * `v_vel` and `v_acc` are the velocity (ft/s) and acceleration (ft/s/s) of the subject vehicle  
 
-Our goal now is to create new columns of the above variables for the preceding vehicle. To this end, we look for the value of `preceding` in the `vehicle_id` column at a given value of `frame_id` (identifier of time frame) and then grab the value of variable e.g., `v_vel` at that `frame_id`:  
+Our goal now is to create new columns of the above variables for the preceding vehicle. To this end, we look for the value of `preceding` in the `vehicle_id` column at a given value of `frame_id` (identifier of time frame) and then grab the value of variable e.g., `v_vel` at that `frame_id`. In Julia, we achieve this by joining a few columns of the dataset with the full dataset while using the columns `vehicle_id` and `preceding` for the join:  
 
-```{r}
-## Create new cols
-data_R <- data_R |> 
-  dplyr::group_by(frame_id) |>  # <1>
-  dplyr::mutate(preceding_local_y = local_y[match(preceding, vehicle_id)], # <2>
-                preceding_local_x = local_x[match(preceding, vehicle_id)],
-                preceding_length = v_length[match(preceding, vehicle_id)],
-                preceding_width = v_width[match(preceding, vehicle_id)],
-                preceding_class = v_class[match(preceding, vehicle_id)],
-                preceding_vel = v_vel[match(preceding, vehicle_id)],
-                preceding_acc = v_acc[match(preceding, vehicle_id)]) |> 
-  dplyr::ungroup()
+```{julia}
+# Join
+data_jl = leftjoin(
+           data_jl,
+           data_jl[:, [:frame_id, :vehicle_id, :local_y, :v_length, :v_width, :v_class, :v_vel, :v_acc]],
+           on = [:frame_id => :frame_id, :preceding => :vehicle_id],
+           makeunique = true, 
+           renamecols = "" => "_preceding"
+       )
 
-head(data_R)
+# Arrange again
+data_jl = @arrange(data_jl, vehicle_id, frame_id)
+
+
+# Rename columns to match with naming in R and Python posts
+data_jl = @chain data_jl begin
+    @rename(preceding_local_y = local_y_preceding,
+            preceding_length =  v_length_preceding,
+            preceding_width = v_width_preceding,
+            preceding_class = v_class_preceding,
+            preceding_vel = v_vel_preceding,
+            preceding_acc = v_acc_preceding)
+end
+
+first(data_jl, 5)
 ```
-1. Grouping by time using `frame_id`.  
-2. `match` function matches the values of `preceding` to `vehicle_id` and provide the positions of these matches. Then we use the `<VAR>[]` syntax to grab the value of a variable (where `<VAR>` means the variable of interest e.g., `v_vel`).  
 
-A `NA` value indicates missing value. In this dataset, `NA` indicates that the value is missing because there was no preceding vehicle observed. For `vehicle_id` 1 we can see this is true because the `preceding` value is 0.  
+  
+In this dataset, `missing` indicates that the value is missing because there was no preceding vehicle observed. For `vehicle_id` 1 we can see this is true because the `preceding` value is 0.  
 
 
 
 ## How to remove undesired columns?
 
-There are several variables in this dataset that we don't need as they are completely devoid of any value. So we remove them:  
+There are several variables in this dataset that we don't need as they are completely devoid of any value. We have removed those variables already. We further remove variables that we don't need for analysis:  
 
-```{r}
-data_R <- data_R |>
-  select(-c(total_frames, starts_with("global"), following, 
-            o_zone, d_zone, int_id, section_id, direction, 
-            movement), global_time) 
-
-head(data_R)
+```{julia}
+data_jl = @select(data_jl, Not(:total_frames, starts_with("global"), :following))
+first(data_jl, 5)
 ```
 
 
@@ -169,34 +191,40 @@ head(data_R)
 
 ![](https://media.giphy.com/media/xUPGcAx3wr7jszFfpe/giphy.gif)
 
-As discussed before, variables in this dataset have imperial units (feet, ft/s, etc.). You may want to transform the values of these variables to metric units. The conversion factor is 0.3048. Here, we utilize the `across` function to take all the desired columns and apply the conversion factor along with rounding to 2 decimal places:  
+As discussed before, variables in this dataset have imperial units (feet, ft/s, etc.). You may want to transform the values of these variables to metric units. The conversion factor is 0.3048. Here, we write a function to take a column and apply the conversion factor along with rounding to 2 decimal places:  
 
-```{r}
+```{julia}
 ## metric units
-data_R <- data_R |> 
-  dplyr::mutate(dplyr::across(
-    .cols = c(dplyr::starts_with("local"), dplyr::starts_with("v_"), space_headway, dplyr::starts_with("preceding"), -preceding, -preceding_class, -v_class),
-    .fns = ~ round(.x * .3048, 2)
-  ))
+function convert_and_round(x)
+    return round(x * 0.3048, digits=2)
+end
 
-head(data_R)
+cols_to_mutate = ["local_x", "local_y", "v_length", "v_width", 
+                 "v_vel", "v_acc", "space_headway",
+                 "preceding_local_y", "preceding_length", "preceding_width",
+                 "preceding_vel", "preceding_acc"]
+
+for col in cols_to_mutate
+    data_jl[!, col] .= convert_and_round.(data_jl[!, col])
+end
+
+first(data_jl, 5)
 ```
 
-### Convert numbers/strings to categorical data type
+### Convert numbers to string data type
 
-Moreover, we know that there are variables that should be treated as categorical (qualitative) rather than numbers or strings. For instance, `lane_id` has values 1-7 and we know that these are identifiers for lanes. Similarly, the class of a vehicle is encoded as 1, 2, and 3 but we know that these numbers do not have any quantitaive information, rather they are categories.   
+Moreover, we know that there are variables that should be treated as categorical (qualitative) rather than numbers. For instance, `lane_id` has values 1-7 and we know that these are identifiers for lanes. Similarly, the class of a vehicle is encoded as 1, 2, and 3 but we know that these numbers do not have any quantitaive information, rather they are categories.   
 
-In R, categorical data is encoded as `factor` data type. So, we use the `as.factor` function to convert numbers/strings to factor data type:    
+We use the `string` function to convert numbers to string data type:    
 
-```{r}
-## factor type
-data_R <- data_R |> 
-  mutate(across(
-  .cols = c(vehicle_id, v_class, lane_id, preceding, preceding_class),
-  .fns = ~ as.factor(.x)
-))
+```{julia}
+data_jl[!,:vehicle_id] = string.(data_jl[!,:vehicle_id])
+data_jl[!,:v_class] = string.(data_jl[!,:v_class])
+data_jl[!,:lane_id] = string.(data_jl[!,:lane_id])
+data_jl[!,:preceding] = string.(data_jl[!,:preceding])
+data_jl[!,:preceding_class] = string.(data_jl[!,:preceding_class])
 
-head(data_R)
+first(data_jl, 5)
 ```
 
 
@@ -205,46 +233,22 @@ head(data_R)
 
 Cool! We are almost done with transforming our dataset. It is time to do some visualization. The last transformation we learn is to filter the data to keep only one vehicle:  
 
-```{r}
-data_R_veh <- data_R |> 
-  dplyr::filter(vehicle_id == "2")
+```{julia}
+data_jl_veh = @filter(data_jl, vehicle_id == "2");
 ```
 
-And now we use `ggplot2` to create a plot of velocity over time. Subject vehicle in blue and preceding vehicle in orange.  
+And now we use `TidierPlots` to create a plot of velocity over time. Subject vehicle in blue and preceding vehicle in orange.  
 
-```{r}
-library(ggplot2)
-ggplot(data = data_R_veh) +
-  geom_path(mapping = aes(x = time, y = v_vel), color = "blue") +
-  geom_path(mapping = aes(x = time, y = preceding_vel), color = "orange") +
+```{julia}
+#| message: false
+
+using TidierPlots
+ggplot(data = data_jl_veh) +
+  geom_path(aes(x = "time", y = "v_vel"), color = "blue") +
+  geom_path(aes(x = "time", y = "preceding_vel"), color = "orange") +
   labs(x = "Time (s)", y = "Velocity (m/s)",
        title = "Velocity of vehicle # 2 and its preceding vehicle") +
   theme_minimal()
 ```
 
-As you see, the lead vehicle speed is not seen after about 17 seconds. This is because the lead vehicle changed lanes.  This can also be seen in this animation:  
-
-```{r}
-#| eval: false
-
-library(gganimate)
-ggplot(data = data_R_veh) +
-  geom_rect(aes(fill = "Preceding Veh", 
-                xmin = preceding_local_y - preceding_length,
-                xmax = preceding_local_y,
-                ymin = preceding_local_x - (preceding_width/2),
-                ymax = preceding_local_x + (preceding_width/2))) +
-  geom_rect(aes(fill = "Subject Veh",
-                xmin = local_y - v_length,
-                xmax = local_y,
-                ymin = local_x - (v_width/2),
-                ymax = local_x + (v_width/2))) +
-  geom_hline(yintercept = 3.6, linetype = "longdash") +
-  coord_fixed(ratio=3.5) +
-  labs(fill = NULL) +
-  theme_minimal() + 
-  theme(legend.position = "none") +
-  transition_reveal(time)
-```
-
-![](car_following.gif)
+As you see, the lead vehicle speed is not seen after about 17 seconds. This is because the lead vehicle changed lanes.  

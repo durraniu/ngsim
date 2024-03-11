@@ -22,5 +22,8 @@
   },
   "posts/transform/transform_r.qmd": {
     "transform_r.html": "532c9e0c"
+  },
+  "posts/transform/transform_jl.qmd": {
+    "transform_jl.html": "34c847f7"
   }
 }
